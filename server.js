@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const path= require("path");
 const {eventLogger}=require('./middleware/logger')
+const {errorHandler}= require('./middleware/errorHandler')
+const cookieParser=require('cookie-parser')
 
 // Get env variable
 const { PORT, NODE_ENV } = process.env;
@@ -10,6 +12,9 @@ const { PORT, NODE_ENV } = process.env;
 app.use (eventLogger)
 //built in middleware that allows receiving/parsing JSON data
 app.use(express.json()); 
+
+//a cookie parser ...
+app.use(cookieParser())
 
 //static ressources or public files middleware access > optionnal
 app.use('/',express.static(path.join(__dirname,'/public')))
@@ -37,7 +42,9 @@ app.all('*',(req,res)=>{
   }
 
 })
-
+// error custom middleware is called last and no need to next() it
+app.use(errorHandler)
+ 
 // Start Web API
 app.listen(PORT, (err) => {
     if(err)
