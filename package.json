@@ -1,0 +1,11 @@
+{
+  "name": "technotes",
+  "version": "1.0.0",
+  "description": "technical notes project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "R.Yagoubi",
+  "license": "ISC"
+}
