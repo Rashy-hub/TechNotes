@@ -11,7 +11,7 @@ app.use('/',express.static(path.join(__dirname,'/public')))
 
 // Add Routing
 const router = require('./routes');
-app.use('/api', router);
+app.use('/api', router); // adding api to the base url
 
 // Start Web API
 app.listen(PORT, (err) => {
