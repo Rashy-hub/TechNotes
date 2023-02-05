@@ -30,8 +30,11 @@ app.use('/',express.static(path.join(__dirname,'/public')))
 
 // Add Routing
 const router = require('./routes');
+const userRouter=require('./routes/userRoutes')
 // adding api to the base url
 app.use('/api', router); 
+// adding other routers here
+app.use('/api/users',userRouter);
 
 // At the end of the waterfall app.use , adding 404 not found redirection
 app.all('*',(req,res)=>{
