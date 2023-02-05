@@ -59,7 +59,7 @@ app.use(errorHandler)
 mongoose.connection.once('open',()=>{
 
   console.log("Connected to DB")
-  logEvents("Connected to DB","DBlog")
+  logEvents("Connected to DB","DBlog.log")
   app.listen(PORT, (err) => {
     if(err)
          console.log('error  : '+ err)
