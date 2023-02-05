@@ -1,7 +1,7 @@
 const {logEvents}=require ('./logger')
 
 
-// we can overwrite the express error system simply by creating a middleware with those (err,req,res,next)
+// we can overwrite the express error system simply by creating a middleware with those (err,req,res,next) args
 const errorHandler = (err,req,res,next)=>{
 // we call log events here  by including err and changing the file to erroLog file
 logEvents(`${err.name}:${err.message}\t${req.method}\t${req.url}\t${req.headers.origin},'errLog.log`)

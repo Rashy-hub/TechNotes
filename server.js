@@ -5,11 +5,16 @@ const path= require("path");
 const {eventLogger}=require('./middleware/logger')
 const {errorHandler}= require('./middleware/errorHandler')
 const cookieParser=require('cookie-parser')
+const cors=require('cors')
+const corsOptions=require('./config/corsOptions')
+
 
 // Get env variable
 const { PORT, NODE_ENV } = process.env;
 //custom middleware event logger used here 
 app.use (eventLogger)
+//use CORS to make api available to the public
+app.use(cors(corsOptions));
 //built in middleware that allows receiving/parsing JSON data
 app.use(express.json()); 
 
