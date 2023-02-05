@@ -2,15 +2,19 @@ require('dotenv-flow').config(); // as soon as possible load env data
 const express = require("express");
 const app = express();
 const path= require("path");
-const {eventLogger}=require('./middleware/logger')
+const {logEvents,eventLogger}=require('./middleware/logger')
 const {errorHandler}= require('./middleware/errorHandler')
 const cookieParser=require('cookie-parser')
 const cors=require('cors')
 const corsOptions=require('./config/corsOptions')
+const connectDB= require('./config/dbConnect')
+const mongoose= require ('mongoose')
 
 
 // Get env variable
 const { PORT, NODE_ENV } = process.env;
+//try to connect 
+connectDB()
 //custom middleware event logger used here 
 app.use (eventLogger)
 //use CORS to make api available to the public
@@ -50,10 +54,22 @@ app.all('*',(req,res)=>{
 // error custom middleware is called last and no need to next() it
 app.use(errorHandler)
  
-// Start Web API
-app.listen(PORT, (err) => {
+// Wrapin in app listen in mongoose event listener 'open' and Start Web API
+
+mongoose.connection.once('open',()=>{
+
+  console.log("Connected to DB")
+  logEvents("Connected to DB","DBlog")
+  app.listen(PORT, (err) => {
     if(err)
          console.log('error  : '+ err)
     console.log(`Web API up on port ${PORT}  [${NODE_ENV}]`);
    
 });
+
+})
+
+mongoose.connection.on('error',(error)=>{
+  logEvents(error,"errorDBlog")
+  console.log(error)
+})
