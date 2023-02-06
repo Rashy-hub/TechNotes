@@ -1,18 +1,24 @@
 const mongoose = require ('mongoose')
 const userModel = require ('../models/Users')
 //Simple middleware for handling exceptions inside of async express routes and passing them to your express error handlers.
-//Also change the way to create controllers functions
+//Also change the way to create controllers async functions
 const asyncHandler = require ('express-async-handler')
 const bcrypt= require ('bcrypt')
+
 
 
 // @desc Get all users
 // @route GET /users
 // @access Private 
 const getAllUsers = asyncHandler(async(req,res)=>{
-console.log("user GET")
-//exclude password field and This makes queries faster and less memory intensive, but the result documents are plain old JavaScript
+    //exclude password field and This makes queries faster and less memory intensive, but the result documents are plain old JavaScript
     const users=await userModel.find().select('-password').lean() 
+    if(!users)
+    {
+        //must be a return statement to quit this controller func
+        return res.status(400).json({message:'No users found'})
+    }
+      
     res.status(200).json(users) // set status to ok and send back data as json
 })
 
@@ -20,8 +26,12 @@ console.log("user GET")
 // @route POST /users
 // @access Private 
 const createNewUser = asyncHandler(async(req,res)=>{
-    console.log("user POST")
-    res.json({message:"user POST"})
+
+    const {username,password,roles}=req.validatedData // added by validator middleware
+  
+    
+
+    res.status(200).json({message:"user POST",username:username,password:password,roles:roles})
 })
 
 // @desc Update a user
