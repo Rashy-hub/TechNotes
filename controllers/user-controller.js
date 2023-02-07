@@ -37,29 +37,52 @@ const createUser = asyncHandler(async (req, res) => {
     //hash password
     const hashedPwd = await bcrypt.hash(password, 10)
     // Create an object user
-    const userObject = { username, password: hashedPwd,  roles };
+    const userObject = { username, password: hashedPwd, roles };
     //create method do every steps as pre-check required fields , create instance of schema and save it
-    const newuser=await userModel.create(userObject)
-    if(newuser)
-    {
+    const newuser = await userModel.create(userObject)
+    if (newuser) {
         //no need of return statement cause its the end 
-        res.status(201).json({message:`new user ${username} created`})
+        res.status(201).json({ message: `new user ${username} created` })
     }
-    else
-    {
-        res.status(400).json({message:`invalid user data`})
+    else {
+        res.status(400).json({ message: `invalid user data` })
     }
 
 
-   // res.status(200).json({ message: "user POSTED", username: username, password: password, roles: roles })
+    // res.status(200).json({ message: "user POSTED", username: username, password: password, roles: roles })
 })
 
 // @desc Update a user
 // @route PATCH /users
 // @access Private 
 const updateUser = asyncHandler(async (req, res) => {
-    console.log("user PATCH")
-    res.json({ message: "user PATCH" })
+
+    // added by validator middleware
+    const { id, username, roles, active, password } = req.validatedData
+    // this time we don't use lean() because we will need mongoose document to use save() correctly
+    const user = await userModel.findById(id).exec();
+    if (!user) {
+        return res.status(400).json({ message: 'User not found' })
+    }
+    //We still need check for duplicate for username
+    // but there is a trick , we have to ignore the current modified user
+    const duplicate = await userModel.findOne({ username }).lean().exec()
+    // allow updates to the original user
+    if (duplicate && duplicate?._id.toString() !== id) {
+        return res.status(409).json({ message: 'This username is already taken' })
+    }
+    //modify fields of the user we find by id , its a mongoose document we can save
+    user.username = username;
+    user.roles = roles;
+    user.active = active;
+    //only if we have passed password in body we must re-hash it with salt rounds
+    if (password) {
+        user.password = await bcrypt.hash(password, 10)
+    }
+
+    const updatedUser = await user.save() // no need of try catch thanks to asyncHandler
+    res.status(201).json({ message: `${updatedUser.username} updated succesfuly` })
+
 })
 // @desc Delete a user
 // @route DELETE /users
