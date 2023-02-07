@@ -1,12 +1,12 @@
 const userRouter = require('express').Router();
 const userController=require('../controllers/user-controller')
 const bodyValidation = require('../middleware/bodyValidation');
-const{createNewUserValidator}=require('../validators/user-validator')
+const{createUserValidator}=require('../validators/user-validator')
 
 
 userRouter.route('/')
             .get(userController.getAllUsers)
-            .post(bodyValidation(createNewUserValidator),userController.createNewUser)
+            .post(bodyValidation(createUserValidator),userController.createUser)
             .patch(userController.updateUser)
             .delete(userController.deleteUser)
 

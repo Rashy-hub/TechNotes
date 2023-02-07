@@ -6,7 +6,7 @@ const rolesRegex=/^manager|employee|admin/
 const rolesRegexMsg='roles must be  at least manager or employee or admin'
 
 
-const createNewUserValidator = yup.object().shape({
+const createUserValidator = yup.object().shape({
        
         username: yup.string().trim().required().min(3).max(50),
         //email: yup.string().trim().lowercase().required().email().max(255),
@@ -20,4 +20,4 @@ const createNewUserValidator = yup.object().shape({
  
 
 
-  module.exports={createNewUserValidator};
+  module.exports={createUserValidator};
