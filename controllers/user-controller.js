@@ -88,8 +88,16 @@ const updateUser = asyncHandler(async (req, res) => {
 // @route DELETE /users
 // @access Private 
 const deleteUser = asyncHandler(async (req, res) => {
-    console.log("user DELETE")
-    res.json({ message: "user DELETE" })
+   const{id}=req.validatedData
+   const deletedusercount = await userModel.deleteOne({_id:id})  
+   if(deletedusercount.deletedCount<1)
+   {
+    return res.status(400).json({message:'cannot delete : user not found '})
+   }
+      
+   res.status(201).json({message:`User with id : ${id} has been deleted`})     
+   //should check if there is notes send warnings and confirmation for deleting user 
+
 })
 
 module.exports = {

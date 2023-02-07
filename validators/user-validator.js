@@ -26,5 +26,8 @@ const updateUserValidator = yup.object().shape({
   password: yup.string().min(8).max(64).matches(pwdRegex, pwdRegexMsg).default(null).nullable()
 });
 
+const deleteUserValidator=yup.object().shape({
+  id:yup.string().trim().required()
+})
 
-module.exports = { updateUserValidator,createUserValidator };
+module.exports = { deleteUserValidator,updateUserValidator,createUserValidator };
