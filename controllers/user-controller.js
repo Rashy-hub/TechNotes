@@ -13,7 +13,7 @@ const bcrypt = require('bcrypt')
 const getAllUsers = asyncHandler(async (req, res) => {
     //exclude password field and This makes queries faster and less memory intensive, but the result documents are plain old JavaScript
     const users = await userModel.find().select('-password').lean()
-    if (!users) {
+    if (!users?.length) {
         //must be a return statement to quit this controller func
         return res.status(400).json({ message: 'No users found' })
     }
