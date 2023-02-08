@@ -14,7 +14,7 @@ const createNoteValidator = yup.object().shape({
 
 const updateNoteValidator = yup.object().shape({
    
-  id:yup.string().required(), 
+  ticket:yup.number().required().min(524), 
   assignedTo: yup.string().trim().min(24).max(25).default(null).nullable(),  
   title: yup.string().min(3).max(16).required(),
   text: yup.string().required().min(8).max(255),
@@ -22,7 +22,7 @@ const updateNoteValidator = yup.object().shape({
 });
 
 const deleteNoteValidator=yup.object().shape({
-  id:yup.string().trim().required()
+  ticket:yup.number().required().min(524)
 })
 
 module.exports = { deleteNoteValidator,updateNoteValidator,createNoteValidator };

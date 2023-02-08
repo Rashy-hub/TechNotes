@@ -48,19 +48,19 @@ const createNote = asyncHandler(async (req, res) => {
 const updateNote = asyncHandler(async (req, res) => {
 
     // added by validator middleware
-    const  {assignedTo,title,text,isCompleted} = req.validatedData
+    const  {ticket,assignedTo,title,text,isCompleted} = req.validatedData
     // this time we don't use lean() because we will need mongoose document to use save() correctly
-    const note = await userModel.findById(id).exec();
+    const note = await noteModel.findOne({ticket}).exec();
     if (!note) {
         return res.status(400).json({ message: 'Note not found' })
     }
     
-    //modify fields of the user we find by id , its a mongoose document we can save
+    //modify fields of the note we find by id , its a mongoose document we can save
+
     note.assignedTo = assignedTo;
     note.title = title;
     note.text = text;
-    note.isCompleted= isCompleted;
-  
+    note.isCompleted= isCompleted;  
 
     const updatedNote = await note.save() // no need of try catch thanks to asyncHandler
     res.status(201).json({ message: `${updatedNote.title} with id :${updateNote._id} updated succesfuly` })
@@ -70,14 +70,14 @@ const updateNote = asyncHandler(async (req, res) => {
 // @route DELETE /notes
 // @access Private 
 const deleteNote = asyncHandler(async (req, res) => {
-   const{id}=req.validatedData
-   const deletednotecount = await userModel.deleteOne({_id:id})  
+   const{ticket}=req.validatedData
+   const deletednotecount = await noteModel.deleteOne({ticket})  
    if(deletednotecount.deletedCount<1)
    {
     return res.status(400).json({message:'cannot delete : note not found '})
    }
       
-   res.status(201).json({message:`Note with id : ${id} and title : ${deletednotecount.title} has been deleted`})     
+   res.status(201).json({message:`Note with ticket n°:${ticket} has been deleted`})     
    
 
 })
